@@ -1,0 +1,370 @@
+--// Serviços
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
+
+--// Variáveis de Estado
+local posicoesSalvas = {}
+local posicaoSelecionada = nil
+local noclipAtivo = false
+local conexaoNoclip = nil
+
+--// Criar Interface (GUI)
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "TeleportGui"
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 320, 0, 580)
+MainFrame.Position = UDim2.new(0.5, -160, 0.5, -290) -- Centralizado
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Parent = ScreenGui
+
+--// Título e Botão de Fechar
+local Titulo = Instance.new("TextLabel")
+Titulo.Size = UDim2.new(1, 0, 0, 40)
+Titulo.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Titulo.TextColor3 = Color3.fromRGB(255, 255, 255)
+Titulo.Text = "🚀 Menu de Utilidades"
+Titulo.Font = Enum.Font.SourceSansBold
+Titulo.TextSize = 18
+Titulo.Parent = MainFrame
+
+local BotaoFechar = Instance.new("TextButton")
+BotaoFechar.Size = UDim2.new(0, 40, 0, 40)
+BotaoFechar.Position = UDim2.new(1, -40, 0, 0)
+BotaoFechar.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+BotaoFechar.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotaoFechar.Text = "X"
+BotaoFechar.Font = Enum.Font.SourceSansBold
+BotaoFechar.TextSize = 18
+BotaoFechar.Parent = MainFrame
+
+--// --- SEÇÃO DE TELEPORTE ---
+local LabelTeleportes = Instance.new("TextLabel")
+LabelTeleportes.Size = UDim2.new(1, -20, 0, 20)
+LabelTeleportes.Position = UDim2.new(0, 10, 0, 50)
+LabelTeleportes.BackgroundTransparency = 1
+LabelTeleportes.TextColor3 = Color3.fromRGB(200, 200, 200)
+LabelTeleportes.Text = "📍 Teleportes"
+LabelTeleportes.Font = Enum.Font.SourceSansBold
+LabelTeleportes.TextSize = 14
+LabelTeleportes.TextXAlignment = Enum.TextXAlignment.Left
+LabelTeleportes.Parent = MainFrame
+
+local BotaoSalvar = Instance.new("TextButton")
+BotaoSalvar.Size = UDim2.new(1, -20, 0, 35)
+BotaoSalvar.Position = UDim2.new(0, 10, 0, 75)
+BotaoSalvar.BackgroundColor3 = Color3.fromRGB(0, 120, 200)
+BotaoSalvar.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotaoSalvar.Text = "📌 Salvar Posição Atual"
+BotaoSalvar.Font = Enum.Font.SourceSansBold
+BotaoSalvar.TextSize = 14
+BotaoSalvar.Parent = MainFrame
+
+local ListaFrame = Instance.new("ScrollingFrame")
+ListaFrame.Size = UDim2.new(1, -20, 0, 130)
+ListaFrame.Position = UDim2.new(0, 10, 0, 115)
+ListaFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ListaFrame.BorderSizePixel = 0
+ListaFrame.ScrollBarThickness = 6
+ListaFrame.Parent = MainFrame
+
+local ListaLayout = Instance.new("UIListLayout")
+ListaLayout.Padding = UDim.new(0, 5)
+ListaLayout.SortOrder = Enum.SortOrder.LayoutOrder
+ListaLayout.Parent = ListaFrame
+
+-- Botões de Ação da Lista
+local BotaoTeleportar = Instance.new("TextButton")
+BotaoTeleportar.Size = UDim2.new(0, 90, 0, 30)
+BotaoTeleportar.Position = UDim2.new(0, 10, 0, 255)
+BotaoTeleportar.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+BotaoTeleportar.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotaoTeleportar.Text = "⚡ Teleportar"
+BotaoTeleportar.Font = Enum.Font.SourceSansBold
+BotaoTeleportar.TextSize = 12
+BotaoTeleportar.Parent = MainFrame
+
+local BotaoRenomear = Instance.new("TextButton")
+BotaoRenomear.Size = UDim2.new(0, 90, 0, 30)
+BotaoRenomear.Position = UDim2.new(0, 110, 0, 255)
+BotaoRenomear.BackgroundColor3 = Color3.fromRGB(150, 100, 0)
+BotaoRenomear.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotaoRenomear.Text = "✏️ Renomear"
+BotaoRenomear.Font = Enum.Font.SourceSansBold
+BotaoRenomear.TextSize = 12
+BotaoRenomear.Parent = MainFrame
+
+local BotaoDeletar = Instance.new("TextButton")
+BotaoDeletar.Size = UDim2.new(0, 90, 0, 30)
+BotaoDeletar.Position = UDim2.new(0, 210, 0, 255)
+BotaoDeletar.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+BotaoDeletar.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotaoDeletar.Text = "🗑️ Apagar"
+BotaoDeletar.Font = Enum.Font.SourceSansBold
+BotaoDeletar.TextSize = 12
+BotaoDeletar.Parent = MainFrame
+
+-- Campo para Renomear
+local TextBoxRenomear = Instance.new("TextBox")
+TextBoxRenomear.Size = UDim2.new(0, 200, 0, 30)
+TextBoxRenomear.Position = UDim2.new(0, 10, 0, 295)
+TextBoxRenomear.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+TextBoxRenomear.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBoxRenomear.PlaceholderText = "Novo nome..."
+TextBoxRenomear.Text = ""
+TextBoxRenomear.Font = Enum.Font.SourceSans
+TextBoxRenomear.TextSize = 14
+TextBoxRenomear.Parent = MainFrame
+
+local BotaoConfirmarNome = Instance.new("TextButton")
+BotaoConfirmarNome.Size = UDim2.new(0, 80, 0, 30)
+BotaoConfirmarNome.Position = UDim2.new(0, 220, 0, 295)
+BotaoConfirmarNome.BackgroundColor3 = Color3.fromRGB(0, 120, 200)
+BotaoConfirmarNome.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotaoConfirmarNome.Text = "Salvar Nome"
+BotaoConfirmarNome.Font = Enum.Font.SourceSansBold
+BotaoConfirmarNome.TextSize = 12
+BotaoConfirmarNome.Parent = MainFrame
+
+--// --- SEÇÃO DE STATUS ---
+local LabelStatus = Instance.new("TextLabel")
+LabelStatus.Size = UDim2.new(1, -20, 0, 20)
+LabelStatus.Position = UDim2.new(0, 10, 0, 340)
+LabelStatus.BackgroundTransparency = 1
+LabelStatus.TextColor3 = Color3.fromRGB(200, 200, 200)
+LabelStatus.Text = "⚙️ Status do Jogador"
+LabelStatus.Font = Enum.Font.SourceSansBold
+LabelStatus.TextSize = 14
+LabelStatus.TextXAlignment = Enum.TextXAlignment.Left
+LabelStatus.Parent = MainFrame
+
+-- Função para criar Sliders
+local function criarSlider(parent, y, nome, min, max, padrao, callback)
+    local bg = Instance.new("Frame")
+    bg.Size = UDim2.new(1, -20, 0, 35)
+    bg.Position = UDim2.new(0, 10, 0, y)
+    bg.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    bg.BorderSizePixel = 0
+    bg.Parent = parent
+
+    local barra = Instance.new("Frame")
+    barra.Size = UDim2.new(1, -20, 0, 6)
+    barra.Position = UDim2.new(0, 10, 0.5, -3)
+    barra.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    barra.BorderSizePixel = 0
+    barra.Parent = bg
+
+    local preenchimento = Instance.new("Frame")
+    preenchimento.Size = UDim2.new(0, 0, 1, 0)
+    preenchimento.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    preenchimento.BorderSizePixel = 0
+    preenchimento.Parent = barra
+
+    local knob = Instance.new("TextButton")
+    knob.Size = UDim2.new(0, 24, 0, 24)
+    knob.Position = UDim2.new(0, 0, 0.5, -12)
+    knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    knob.Text = ""
+    knob.Parent = barra
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Text = nome .. ": " .. padrao
+    label.Font = Enum.Font.SourceSans
+    label.TextSize = 14
+    label.Parent = bg
+
+    local dragging = false
+    local function atualizar(valor)
+        valor = math.clamp(valor, min, max)
+        local percent = (valor - min) / (max - min)
+        knob.Position = UDim2.new(percent, -12, 0.5, -12)
+        preenchimento.Size = UDim2.new(percent, 0, 1, 0)
+        label.Text = nome .. ": " .. valor
+        callback(valor)
+    end
+
+    atualizar(padrao)
+
+    knob.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+        end
+    end)
+    barra.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            local mouseX = input.Position.X
+            local bgX = barra.AbsolutePosition.X
+            local bgW = barra.AbsoluteSize.X
+            atualizar(math.floor(min + (max - min) * math.clamp((mouseX - bgX) / bgW, 0, 1)))
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local mouseX = input.Position.X
+            local bgX = barra.AbsolutePosition.X
+            local bgW = barra.AbsoluteSize.X
+            atualizar(math.floor(min + (max - min) * math.clamp((mouseX - bgX) / bgW, 0, 1)))
+        end
+    end)
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+end
+
+-- Criar os Sliders
+criarSlider(MainFrame, 365, "Velocidade", 0, 1000, 16, function(v)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.WalkSpeed = v
+    end
+end)
+
+criarSlider(MainFrame, 405, "Pulo", 0, 1000, 50, function(v)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.JumpPower = v
+        LocalPlayer.Character.Humanoid.UseJumpPower = true
+    end
+end)
+
+--// --- SEÇÃO DE NOCLIP ---
+local BotaoNoclip = Instance.new("TextButton")
+BotaoNoclip.Size = UDim2.new(1, -20, 0, 40)
+BotaoNoclip.Position = UDim2.new(0, 10, 0, 450)
+BotaoNoclip.BackgroundColor3 = Color3.fromRGB(100, 50, 50)
+BotaoNoclip.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotaoNoclip.Text = "👻 Noclip: OFF"
+BotaoNoclip.Font = Enum.Font.SourceSansBold
+BotaoNoclip.TextSize = 14
+BotaoNoclip.Parent = MainFrame
+
+--// --- LÓGICA DE TELEPORTE ---
+local function atualizarLista()
+    for _, child in ipairs(ListaFrame:GetChildren()) do
+        if child:IsA("TextButton") then child:Destroy() end
+    end
+    
+    for i, pos in ipairs(posicoesSalvas) do
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1, -10, 0, 30)
+        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Text = pos.name
+        btn.Font = Enum.Font.SourceSans
+        btn.TextSize = 14
+        btn.Parent = ListaFrame
+        
+        btn.MouseButton1Click:Connect(function()
+            posicaoSelecionada = i
+            for _, b in ipairs(ListaFrame:GetChildren()) do
+                if b:IsA("TextButton") then b.BackgroundColor3 = Color3.fromRGB(60, 60, 60) end
+            end
+            btn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+        end)
+    end
+end
+
+BotaoSalvar.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        table.insert(posicoesSalvas, {name = "Posição " .. (#posicoesSalvas + 1), cframe = char.HumanoidRootPart.CFrame})
+        atualizarLista()
+    end
+end)
+
+BotaoTeleportar.MouseButton1Click:Connect(function()
+    if not posicaoSelecionada then return end
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = posicoesSalvas[posicaoSelecionada].cframe
+    end
+end)
+
+BotaoDeletar.MouseButton1Click:Connect(function()
+    if not posicaoSelecionada then return end
+    table.remove(posicoesSalvas, posicaoSelecionada)
+    posicaoSelecionada = nil
+    atualizarLista()
+end)
+
+BotaoConfirmarNome.MouseButton1Click:Connect(function()
+    if not posicaoSelecionada or TextBoxRenomear.Text == "" then return end
+    posicoesSalvas[posicaoSelecionada].name = TextBoxRenomear.Text
+    TextBoxRenomear.Text = ""
+    atualizarLista()
+end)
+
+--// --- LÓGICA DO NOCLIP ---
+local function alternarNoclip()
+    noclipAtivo = not noclipAtivo
+    if noclipAtivo then
+        BotaoNoclip.Text = "👻 Noclip: ON"
+        BotaoNoclip.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+        conexaoNoclip = RunService.Stepped:Connect(function()
+            if LocalPlayer.Character then
+                for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then part.CanCollide = false end
+                end
+            end
+        end)
+    else
+        BotaoNoclip.Text = "👻 Noclip: OFF"
+        BotaoNoclip.BackgroundColor3 = Color3.fromRGB(100, 50, 50)
+        if conexaoNoclip then conexaoNoclip:Disconnect() conexaoNoclip = nil end
+        if LocalPlayer.Character then
+            for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
+                if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then part.CanCollide = true end
+            end
+        end
+    end
+end
+BotaoNoclip.MouseButton1Click:Connect(alternarNoclip)
+
+--// --- FECHAR MENU ---
+BotaoFechar.MouseButton1Click:Connect(function()
+    ScreenGui.Enabled = not ScreenGui.Enabled
+end)
+
+--// --- ARRASTAR MENU ---
+local dragging, dragInput, dragStart, startPos
+MainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
+        end)
+    end
+end)
+MainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
+end)
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+--// --- REAPLICAR STATUS AO RENASCER ---
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(1)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        -- Pega os valores atuais dos sliders (ou define padrão)
+        LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        LocalPlayer.Character.Humanoid.JumpPower = 50
+        LocalPlayer.Character.Humanoid.UseJumpPower = true
+    end
+end)
+
+print("Menu carregado com sucesso!")
