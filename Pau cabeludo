@@ -15,59 +15,73 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "TeleportGui"
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
+--// Menu Principal (Menor)
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 320, 0, 580)
-MainFrame.Position = UDim2.new(0.5, -160, 0.5, -290) -- Centralizado
+MainFrame.Size = UDim2.new(0, 260, 0, 480) -- Tamanho inicial menor
+MainFrame.Position = UDim2.new(0.5, -130, 0.5, -240)
 MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
+MainFrame.Visible = true
 MainFrame.Parent = ScreenGui
 
---// Título e Botão de Fechar
+--// Título
 local Titulo = Instance.new("TextLabel")
-Titulo.Size = UDim2.new(1, 0, 0, 40)
+Titulo.Size = UDim2.new(1, 0, 0, 35)
 Titulo.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Titulo.TextColor3 = Color3.fromRGB(255, 255, 255)
-Titulo.Text = "🚀 Menu de Utilidades"
+Titulo.Text = "pau cabeludo gostoso 🍆"
 Titulo.Font = Enum.Font.SourceSansBold
-Titulo.TextSize = 18
+Titulo.TextSize = 16
 Titulo.Parent = MainFrame
 
-local BotaoFechar = Instance.new("TextButton")
-BotaoFechar.Size = UDim2.new(0, 40, 0, 40)
-BotaoFechar.Position = UDim2.new(1, -40, 0, 0)
-BotaoFechar.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-BotaoFechar.TextColor3 = Color3.fromRGB(255, 255, 255)
-BotaoFechar.Text = "X"
-BotaoFechar.Font = Enum.Font.SourceSansBold
-BotaoFechar.TextSize = 18
-BotaoFechar.Parent = MainFrame
+--// Botão Minimizar (que vira a bolinha)
+local BotaoMinimizar = Instance.new("TextButton")
+BotaoMinimizar.Size = UDim2.new(0, 35, 0, 35)
+BotaoMinimizar.Position = UDim2.new(1, -35, 0, 0)
+BotaoMinimizar.BackgroundColor3 = Color3.fromRGB(200, 150, 50)
+BotaoMinimizar.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotaoMinimizar.Text = "—"
+BotaoMinimizar.Font = Enum.Font.SourceSansBold
+BotaoMinimizar.TextSize = 20
+BotaoMinimizar.Parent = MainFrame
+
+--// Puxador de Redimensionar (Canto inferior direito)
+local ResizeHandle = Instance.new("TextButton")
+ResizeHandle.Size = UDim2.new(0, 20, 0, 20)
+ResizeHandle.Position = UDim2.new(1, -20, 1, -20)
+ResizeHandle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+ResizeHandle.TextColor3 = Color3.fromRGB(255, 255, 255)
+ResizeHandle.Text = "◢"
+ResizeHandle.Font = Enum.Font.SourceSansBold
+ResizeHandle.TextSize = 14
+ResizeHandle.Parent = MainFrame
 
 --// --- SEÇÃO DE TELEPORTE ---
 local LabelTeleportes = Instance.new("TextLabel")
 LabelTeleportes.Size = UDim2.new(1, -20, 0, 20)
-LabelTeleportes.Position = UDim2.new(0, 10, 0, 50)
+LabelTeleportes.Position = UDim2.new(0, 10, 0, 45)
 LabelTeleportes.BackgroundTransparency = 1
 LabelTeleportes.TextColor3 = Color3.fromRGB(200, 200, 200)
 LabelTeleportes.Text = "📍 Teleportes"
 LabelTeleportes.Font = Enum.Font.SourceSansBold
-LabelTeleportes.TextSize = 14
+LabelTeleportes.TextSize = 12
 LabelTeleportes.TextXAlignment = Enum.TextXAlignment.Left
 LabelTeleportes.Parent = MainFrame
 
 local BotaoSalvar = Instance.new("TextButton")
-BotaoSalvar.Size = UDim2.new(1, -20, 0, 35)
-BotaoSalvar.Position = UDim2.new(0, 10, 0, 75)
+BotaoSalvar.Size = UDim2.new(1, -20, 0, 30)
+BotaoSalvar.Position = UDim2.new(0, 10, 0, 65)
 BotaoSalvar.BackgroundColor3 = Color3.fromRGB(0, 120, 200)
 BotaoSalvar.TextColor3 = Color3.fromRGB(255, 255, 255)
 BotaoSalvar.Text = "📌 Salvar Posição Atual"
 BotaoSalvar.Font = Enum.Font.SourceSansBold
-BotaoSalvar.TextSize = 14
+BotaoSalvar.TextSize = 12
 BotaoSalvar.Parent = MainFrame
 
 local ListaFrame = Instance.new("ScrollingFrame")
-ListaFrame.Size = UDim2.new(1, -20, 0, 130)
-ListaFrame.Position = UDim2.new(0, 10, 0, 115)
+ListaFrame.Size = UDim2.new(1, -20, 0, 110)
+ListaFrame.Position = UDim2.new(0, 10, 0, 100)
 ListaFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 ListaFrame.BorderSizePixel = 0
 ListaFrame.ScrollBarThickness = 6
@@ -78,30 +92,30 @@ ListaLayout.Padding = UDim.new(0, 5)
 ListaLayout.SortOrder = Enum.SortOrder.LayoutOrder
 ListaLayout.Parent = ListaFrame
 
--- Botões de Ação da Lista
+-- Botões de Ação da Lista (Ajustados para caber no menu menor)
 local BotaoTeleportar = Instance.new("TextButton")
-BotaoTeleportar.Size = UDim2.new(0, 90, 0, 30)
-BotaoTeleportar.Position = UDim2.new(0, 10, 0, 255)
+BotaoTeleportar.Size = UDim2.new(0, 75, 0, 25)
+BotaoTeleportar.Position = UDim2.new(0, 10, 0, 215)
 BotaoTeleportar.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
 BotaoTeleportar.TextColor3 = Color3.fromRGB(255, 255, 255)
-BotaoTeleportar.Text = "⚡ Teleportar"
+BotaoTeleportar.Text = "⚡ Ir"
 BotaoTeleportar.Font = Enum.Font.SourceSansBold
 BotaoTeleportar.TextSize = 12
 BotaoTeleportar.Parent = MainFrame
 
 local BotaoRenomear = Instance.new("TextButton")
-BotaoRenomear.Size = UDim2.new(0, 90, 0, 30)
-BotaoRenomear.Position = UDim2.new(0, 110, 0, 255)
+BotaoRenomear.Size = UDim2.new(0, 75, 0, 25)
+BotaoRenomear.Position = UDim2.new(0, 90, 0, 215)
 BotaoRenomear.BackgroundColor3 = Color3.fromRGB(150, 100, 0)
 BotaoRenomear.TextColor3 = Color3.fromRGB(255, 255, 255)
-BotaoRenomear.Text = "✏️ Renomear"
+BotaoRenomear.Text = "✏️ Nome"
 BotaoRenomear.Font = Enum.Font.SourceSansBold
 BotaoRenomear.TextSize = 12
 BotaoRenomear.Parent = MainFrame
 
 local BotaoDeletar = Instance.new("TextButton")
-BotaoDeletar.Size = UDim2.new(0, 90, 0, 30)
-BotaoDeletar.Position = UDim2.new(0, 210, 0, 255)
+BotaoDeletar.Size = UDim2.new(0, 75, 0, 25)
+BotaoDeletar.Position = UDim2.new(0, 170, 0, 215)
 BotaoDeletar.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
 BotaoDeletar.TextColor3 = Color3.fromRGB(255, 255, 255)
 BotaoDeletar.Text = "🗑️ Apagar"
@@ -109,24 +123,23 @@ BotaoDeletar.Font = Enum.Font.SourceSansBold
 BotaoDeletar.TextSize = 12
 BotaoDeletar.Parent = MainFrame
 
--- Campo para Renomear
 local TextBoxRenomear = Instance.new("TextBox")
-TextBoxRenomear.Size = UDim2.new(0, 200, 0, 30)
-TextBoxRenomear.Position = UDim2.new(0, 10, 0, 295)
+TextBoxRenomear.Size = UDim2.new(0, 170, 0, 25)
+TextBoxRenomear.Position = UDim2.new(0, 10, 0, 245)
 TextBoxRenomear.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 TextBoxRenomear.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBoxRenomear.PlaceholderText = "Novo nome..."
 TextBoxRenomear.Text = ""
 TextBoxRenomear.Font = Enum.Font.SourceSans
-TextBoxRenomear.TextSize = 14
+TextBoxRenomear.TextSize = 12
 TextBoxRenomear.Parent = MainFrame
 
 local BotaoConfirmarNome = Instance.new("TextButton")
-BotaoConfirmarNome.Size = UDim2.new(0, 80, 0, 30)
-BotaoConfirmarNome.Position = UDim2.new(0, 220, 0, 295)
+BotaoConfirmarNome.Size = UDim2.new(0, 60, 0, 25)
+BotaoConfirmarNome.Position = UDim2.new(0, 185, 0, 245)
 BotaoConfirmarNome.BackgroundColor3 = Color3.fromRGB(0, 120, 200)
 BotaoConfirmarNome.TextColor3 = Color3.fromRGB(255, 255, 255)
-BotaoConfirmarNome.Text = "Salvar Nome"
+BotaoConfirmarNome.Text = "Salvar"
 BotaoConfirmarNome.Font = Enum.Font.SourceSansBold
 BotaoConfirmarNome.TextSize = 12
 BotaoConfirmarNome.Parent = MainFrame
@@ -134,27 +147,27 @@ BotaoConfirmarNome.Parent = MainFrame
 --// --- SEÇÃO DE STATUS ---
 local LabelStatus = Instance.new("TextLabel")
 LabelStatus.Size = UDim2.new(1, -20, 0, 20)
-LabelStatus.Position = UDim2.new(0, 10, 0, 340)
+LabelStatus.Position = UDim2.new(0, 10, 0, 280)
 LabelStatus.BackgroundTransparency = 1
 LabelStatus.TextColor3 = Color3.fromRGB(200, 200, 200)
 LabelStatus.Text = "⚙️ Status do Jogador"
 LabelStatus.Font = Enum.Font.SourceSansBold
-LabelStatus.TextSize = 14
+LabelStatus.TextSize = 12
 LabelStatus.TextXAlignment = Enum.TextXAlignment.Left
 LabelStatus.Parent = MainFrame
 
 -- Função para criar Sliders
 local function criarSlider(parent, y, nome, min, max, padrao, callback)
     local bg = Instance.new("Frame")
-    bg.Size = UDim2.new(1, -20, 0, 35)
+    bg.Size = UDim2.new(1, -20, 0, 30)
     bg.Position = UDim2.new(0, 10, 0, y)
     bg.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     bg.BorderSizePixel = 0
     bg.Parent = parent
 
     local barra = Instance.new("Frame")
-    barra.Size = UDim2.new(1, -20, 0, 6)
-    barra.Position = UDim2.new(0, 10, 0.5, -3)
+    barra.Size = UDim2.new(1, -20, 0, 4)
+    barra.Position = UDim2.new(0, 10, 0.5, -2)
     barra.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     barra.BorderSizePixel = 0
     barra.Parent = bg
@@ -166,8 +179,8 @@ local function criarSlider(parent, y, nome, min, max, padrao, callback)
     preenchimento.Parent = barra
 
     local knob = Instance.new("TextButton")
-    knob.Size = UDim2.new(0, 24, 0, 24)
-    knob.Position = UDim2.new(0, 0, 0.5, -12)
+    knob.Size = UDim2.new(0, 18, 0, 18)
+    knob.Position = UDim2.new(0, 0, 0.5, -9)
     knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     knob.Text = ""
     knob.Parent = barra
@@ -178,14 +191,14 @@ local function criarSlider(parent, y, nome, min, max, padrao, callback)
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.Text = nome .. ": " .. padrao
     label.Font = Enum.Font.SourceSans
-    label.TextSize = 14
+    label.TextSize = 12
     label.Parent = bg
 
     local dragging = false
     local function atualizar(valor)
         valor = math.clamp(valor, min, max)
         local percent = (valor - min) / (max - min)
-        knob.Position = UDim2.new(percent, -12, 0.5, -12)
+        knob.Position = UDim2.new(percent, -9, 0.5, -9)
         preenchimento.Size = UDim2.new(percent, 0, 1, 0)
         label.Text = nome .. ": " .. valor
         callback(valor)
@@ -194,9 +207,7 @@ local function criarSlider(parent, y, nome, min, max, padrao, callback)
     atualizar(padrao)
 
     knob.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-        end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = true end
     end)
     barra.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -216,35 +227,30 @@ local function criarSlider(parent, y, nome, min, max, padrao, callback)
         end
     end)
     UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = false
-        end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = false end
     end)
 end
 
--- Criar os Sliders
-criarSlider(MainFrame, 365, "Velocidade", 0, 1000, 16, function(v)
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        LocalPlayer.Character.Humanoid.WalkSpeed = v
-    end
+criarSlider(MainFrame, 305, "Velocidade", 0, 1000, 16, function(v)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then LocalPlayer.Character.Humanoid.WalkSpeed = v end
 end)
 
-criarSlider(MainFrame, 405, "Pulo", 0, 1000, 50, function(v)
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        LocalPlayer.Character.Humanoid.JumpPower = v
+criarSlider(MainFrame, 340, "Pulo", 0, 1000, 50, function(v)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then 
+        LocalPlayer.Character.Humanoid.JumpPower = v 
         LocalPlayer.Character.Humanoid.UseJumpPower = true
     end
 end)
 
 --// --- SEÇÃO DE NOCLIP ---
 local BotaoNoclip = Instance.new("TextButton")
-BotaoNoclip.Size = UDim2.new(1, -20, 0, 40)
-BotaoNoclip.Position = UDim2.new(0, 10, 0, 450)
+BotaoNoclip.Size = UDim2.new(1, -20, 0, 35)
+BotaoNoclip.Position = UDim2.new(0, 10, 0, 380)
 BotaoNoclip.BackgroundColor3 = Color3.fromRGB(100, 50, 50)
 BotaoNoclip.TextColor3 = Color3.fromRGB(255, 255, 255)
 BotaoNoclip.Text = "👻 Noclip: OFF"
 BotaoNoclip.Font = Enum.Font.SourceSansBold
-BotaoNoclip.TextSize = 14
+BotaoNoclip.TextSize = 12
 BotaoNoclip.Parent = MainFrame
 
 --// --- LÓGICA DE TELEPORTE ---
@@ -252,17 +258,15 @@ local function atualizarLista()
     for _, child in ipairs(ListaFrame:GetChildren()) do
         if child:IsA("TextButton") then child:Destroy() end
     end
-    
     for i, pos in ipairs(posicoesSalvas) do
         local btn = Instance.new("TextButton")
-        btn.Size = UDim2.new(1, -10, 0, 30)
+        btn.Size = UDim2.new(1, -10, 0, 25)
         btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
         btn.TextColor3 = Color3.fromRGB(255, 255, 255)
         btn.Text = pos.name
         btn.Font = Enum.Font.SourceSans
-        btn.TextSize = 14
+        btn.TextSize = 12
         btn.Parent = ListaFrame
-        
         btn.MouseButton1Click:Connect(function()
             posicaoSelecionada = i
             for _, b in ipairs(ListaFrame:GetChildren()) do
@@ -329,12 +333,31 @@ local function alternarNoclip()
 end
 BotaoNoclip.MouseButton1Click:Connect(alternarNoclip)
 
---// --- FECHAR MENU ---
-BotaoFechar.MouseButton1Click:Connect(function()
-    ScreenGui.Enabled = not ScreenGui.Enabled
+--// --- BOLINHA FLUTUANTE (MINIMIZAR) ---
+local BallButton = Instance.new("TextButton")
+BallButton.Size = UDim2.new(0, 50, 0, 50)
+BallButton.Position = UDim2.new(0, 50, 0.5, -25)
+BallButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+BallButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+BallButton.Text = "🚀"
+BallButton.Font = Enum.Font.SourceSansBold
+BallButton.TextSize = 24
+BallButton.Visible = false
+BallButton.Parent = ScreenGui
+
+-- Lógica de Minimizar
+BotaoMinimizar.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    BallButton.Visible = true
 end)
 
---// --- ARRASTAR MENU ---
+-- Lógica de Restaurar
+BallButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = true
+    BallButton.Visible = false
+end)
+
+--// --- ARRASTAR MENU PRINCIPAL ---
 local dragging, dragInput, dragStart, startPos
 MainFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -356,15 +379,58 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
+--// --- ARRASTAR BOLINHA ---
+local ballDragging, ballDragInput, ballDragStart, ballStartPos
+BallButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        ballDragging = true
+        ballDragStart = input.Position
+        ballStartPos = BallButton.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then ballDragging = false end
+        end)
+    end
+end)
+BallButton.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then ballDragInput = input end
+end)
+UserInputService.InputChanged:Connect(function(input)
+    if input == ballDragInput and ballDragging then
+        local delta = input.Position - ballDragStart
+        BallButton.Position = UDim2.new(ballStartPos.X.Scale, ballStartPos.X.Offset + delta.X, ballStartPos.Y.Scale, ballStartPos.Y.Offset + delta.Y)
+    end
+end)
+
+--// --- LÓGICA DE REDIMENSIONAR (RESIZE) ---
+local resizing = false
+local resizeStart, resizeStartSize
+ResizeHandle.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        resizing = true
+        resizeStart = input.Position
+        resizeStartSize = MainFrame.Size
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then resizing = false end
+        end)
+    end
+end)
+UserInputService.InputChanged:Connect(function(input)
+    if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - resizeStart
+        local newX = math.clamp(resizeStartSize.X.Offset + delta.X, 220, 600) -- Largura mínima 220, máxima 600
+        local newY = math.clamp(resizeStartSize.Y.Offset + delta.Y, 400, 800) -- Altura mínima 400, máxima 800
+        MainFrame.Size = UDim2.new(0, newX, 0, newY)
+    end
+end)
+
 --// --- REAPLICAR STATUS AO RENASCER ---
 LocalPlayer.CharacterAdded:Connect(function()
     task.wait(1)
     if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        -- Pega os valores atuais dos sliders (ou define padrão)
         LocalPlayer.Character.Humanoid.WalkSpeed = 16
         LocalPlayer.Character.Humanoid.JumpPower = 50
         LocalPlayer.Character.Humanoid.UseJumpPower = true
     end
 end)
 
-print("Menu carregado com sucesso!")
+print("Menu atualizado com sucesso! Minimize e redimensione à vontade.")
